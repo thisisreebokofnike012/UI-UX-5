@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StayEase Design System Lab — Визуальный дизайн (METU, Алматы 2026)</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+            },
+            surface: {
+              950: '#060a12',
+              900: '#0a101d',
+              850: '#0f182c',
+              800: '#1e293b',
+              700: '#334155',
+            }
+          },
+          boxShadow: {
+            'glow-accent': '0 0 25px rgba(2, 132, 199, 0.45)',
+            'glow-success': '0 0 25px rgba(16, 185, 129, 0.45)',
+            'glow-error': '0 0 25px rgba(239, 68, 68, 0.45)',
+            'card-elevated': '0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 1px 1px rgba(255, 255, 255, 0.08)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* 8-Point Grid Overlay Pattern */
+    .grid-8pt-overlay {
+      background-size: 8px 8px;
+      background-image: 
+        linear-gradient(to right, rgba(56, 189, 248, 0.12) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(56, 189, 248, 0.12) 1px, transparent 1px);
+    }
+
+    /* Alignment Laser Line */
+    .laser-guide {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #ef4444;
+      box-shadow: 0 0 8px #ef4444;
+      z-index: 40;
+      pointer-events: none;
+    }
+
+    /* Subtle pulse animation for highlighted items */
+    @keyframes focusPulse {
+      0%, 100% { outline-color: #38bdf8; outline-offset: 4px; }
+      50% { outline-color: #f59e0b; outline-offset: 6px; }
+    }
+    .element-highlighted {
+      outline: 3px solid #38bdf8 !important;
+      outline-offset: 4px !important;
+      animation: focusPulse 2s infinite ease-in-out;
+    }
+
+    /* Shake animation for error state */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+    .animate-shake {
+      animation: shake 0.4s ease-in-out;
+    }
+  </style>
+</head>
+
+<body class="bg-surface-950 text-slate-100 font-sans min-h-screen selection:bg-brand-500 selection:text-white relative overflow-x-hidden">
+
+  <!-- ========================================================================= -->
+  <!-- TOP HEADER & UNIVERSITY BAR -->
+  <!-- ========================================================================= -->
+  <header class="border-b border-surface-800/80 bg-surface-900/90 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Logo & Meta -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-brand-500 to-sky-300 flex items-center justify-center text-white shadow-md">
+          <i data-lucide="layers" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-base tracking-tight text-white">StayEase Design Lab</span>
+            <span class="text-[11px] px-2 py-0.5 rounded-full bg-brand-500/15 text-brand-400 border border-brand-500/30 font-mono">Дәріс 5</span>
+          </div>
+          <p class="text-[11px] text-slate-400 font-medium">МИТУ (METU) • Кафедра «Программная инженерия» • Алматы 2026</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-3">
+        <a href="report_visual_design.html" target="_blank" class="hidden sm:inline-flex items-center gap-2 text-xs font-semibold px-3.5 py-2 rounded-xl bg-surface-850 hover:bg-surface-800 text-slate-200 border border-surface-700 transition-colors">
+          <i data-lucide="file-text" class="w-3.5 h-3.5 text-brand-400"></i>
+          <span>Текст отчёта (Word / A4)</span>
+        </a>
+        <button id="btn-reset-lab" class="inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white shadow-sm transition-all">
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+          <span>Сброс инспектора</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- MAIN WORKSPACE: 3-COLUMN LAB LAYOUT -->
+  <!-- ========================================================================= -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- ===================================================================== -->
+      <!-- COLUMN 1: DESIGN SYSTEM CONTROLS & INSPECTOR (LEFT - 3.5 COLS) -->
+      <!-- ===================================================================== -->
+      <aside class="lg:col-span-4 space-y-6">
+        
+        <!-- Inspector Card -->
+        <div class="p-5 rounded-2xl bg-surface-900 border border-surface-800 shadow-xl space-y-5">
+          <div class="flex items-center justify-between pb-3 border-b border-surface-800">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i data-lucide="sliders" class="w-4 h-4 text-brand-400"></i>
+              <span>Инспектор визуального дизайна</span>
+            </h3>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-surface-800 text-slate-300">Live Tools</span>
+          </div>
+
+          <!-- 1. Grid Systems Toggles -->
+          <div class="space-y-2">
+            <span class="text-[11px] uppercase tracking-wider text-slate-400 font-bold block">1. Сеточные оверлеи (Grid)</span>
+            <div class="grid grid-cols-3 gap-2">
+              <button id="toggle-grid-8pt" class="tool-btn px-2.5 py-2 rounded-xl border border-surface-700 bg-surface-950 text-slate-300 hover:text-white text-xs font-medium flex flex-col items-center gap-1 transition-all">
+                <i data-lucide="grid" class="w-4 h-4"></i>
+                <span class="text-[10px]">8-pt Grid</span>
+              </button>
+              <button id="toggle-grid-12col" class="tool-btn px-2.5 py-2 rounded-xl border border-surface-700 bg-surface-950 text-slate-300 hover:text-white text-xs font-medium flex flex-col items-center gap-1 transition-all">
+                <i data-lucide="columns-3" class="w-4 h-4"></i>
+                <span class="text-[10px]">12-Col Desk</span>
+              </button>
+              <button id="toggle-grid-mobile" class="tool-btn px-2.5 py-2 rounded-xl border border-surface-700 bg-surface-950 text-slate-300 hover:text-white text-xs font-medium flex flex-col items-center gap-1 transition-all">
+                <i data-lucide="smartphone" class="w-4 h-4"></i>
+                <span class="text-[10px]">4-Col Mob</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 2. Rule 60-30-10 Calculator & Display -->
+          <div class="space-y-2 pt-2 border-t border-surface-800">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] uppercase tracking-wider text-slate-400 font-bold">2. Колористика 60–30–10</span>
+              <span class="text-[10px] text-brand-400 font-mono font-bold">Гармония</span>
+            </div>
+
+            <!-- Visual Proportion Bar -->
+            <div class="h-3 w-full rounded-full overflow-hidden flex shadow-inner border border-surface-700">
+              <div class="bg-surface-950 w-[60%] relative group cursor-pointer" title="60% Поверхность"></div>
+              <div class="bg-surface-800 w-[30%] relative group cursor-pointer" title="30% Карточка и текст"></div>
+              <div class="bg-brand-600 w-[10%] relative group cursor-pointer" title="10% Акцентный CTA"></div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-1.5 text-[10px] pt-1">
+              <div class="p-2 rounded-lg bg-surface-950 border border-surface-800">
+                <strong class="text-white block font-mono">60%</strong>
+                <span class="text-slate-400 block truncate">Фон экрана</span>
+              </div>
+              <div class="p-2 rounded-lg bg-surface-850 border border-surface-800">
+                <strong class="text-white block font-mono">30%</strong>
+                <span class="text-slate-400 block truncate">Карточка & Текст</span>
+              </div>
+              <div class="p-2 rounded-lg bg-brand-600/20 border border-brand-500/40">
+                <strong class="text-brand-400 block font-mono">10%</strong>
+                <span class="text-brand-300 block truncate">Кнопка CTA</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Typography & Spacing Overlays -->
+          <div class="space-y-2 pt-2 border-t border-surface-800">
+            <span class="text-[11px] uppercase tracking-wider text-slate-400 font-bold block">3. Линейка и шкала шрифтов</span>
+            <div class="grid grid-cols-2 gap-2">
+              <button id="toggle-type-scale" class="tool-btn px-3 py-2 rounded-xl border border-surface-700 bg-surface-950 text-slate-300 hover:text-white text-xs font-medium flex items-center justify-center gap-1.5 transition-all">
+                <i data-lucide="type" class="w-4 h-4 text-sky-400"></i>
+                <span class="text-[11px]">Type Scale</span>
+              </button>
+              <button id="toggle-spacing-badges" class="tool-btn px-3 py-2 rounded-xl border border-surface-700 bg-surface-950 text-slate-300 hover:text-white text-xs font-medium flex items-center justify-center gap-1.5 transition-all">
+                <i data-lucide="ruler" class="w-4 h-4 text-amber-400"></i>
+                <span class="text-[11px]">8pt Отступы</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 4. Interactive State Switcher -->
+          <div class="space-y-2 pt-2 border-t border-surface-800">
+            <span class="text-[11px] uppercase tracking-wider text-slate-400 font-bold block">4. Состояния компонента (State Matrix)</span>
+            <div class="grid grid-cols-2 gap-2">
+              <button data-state="default" class="state-btn active px-3 py-2 rounded-xl border border-brand-500 bg-brand-500/15 text-white text-xs font-bold transition-all">Default</button>
+              <button data-state="loading" class="state-btn px-3 py-2 rounded-xl border border-surface-700 bg-surface-950 text-slate-300 hover:text-white text-xs font-medium transition-all">Loading</button>
+              <button data-state="error" class="state-btn px-3 py-2 rounded-xl border border-surface-700 bg-surface-950 text-slate-300 hover:text-white text-xs font-medium transition-all">Error</button>
+              <button data-state="success" class="state-btn px-3 py-2 rounded-xl border border-surface-700 bg-surface-950 text-slate-300 hover:text-white text-xs font-medium transition-all">Success</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Academic Info Card -->
+        <div class="p-4 rounded-2xl bg-surface-900/60 border border-surface-800 text-xs text-slate-300 space-y-2">
+          <div class="font-bold text-white flex items-center gap-2">
+            <i data-lucide="graduation-cap" class="w-4 h-4 text-brand-400"></i>
+            <span>Методическая справка (Дәріс 5)</span>
+          </div>
+          <p class="leading-relaxed text-[11px] text-slate-400">
+            Разработано по требованиям Международного инженерно-технологического университета (Алматы 2026). Все размеры тач-таргетов кратны 8px, минимальная высота кнопок — 48px.
+          </p>
+        </div>
+
+      </aside>
+
+      <!-- ===================================================================== -->
+      <!-- COLUMN 2: LIVE LOGIN PAGE MOCKUP (CENTER - 4.5 COLS) -->
+      <!-- ===================================================================== -->
+      <section class="lg:col-span-4 flex justify-center relative">
+        
+        <!-- Desktop Grid Overlay (12 Columns Visualizer) -->
+        <div id="overlay-12col" class="absolute inset-0 z-30 pointer-events-none hidden grid grid-cols-12 gap-2 px-2">
+          <div class="bg-red-500/10 border-x border-red-500/20 h-full"></div>
+          <div class="bg-red-500/10 border-x border-red-500/20 h-full"></div>
+          <div class="bg-red-500/10 border-x border-red-500/20 h-full"></div>
+          <div class="bg-red-500/10 border-x border-red-500/20 h-full"></div>
+          <div class="bg-red-500/10 border-x border-red-500/20 h-full"></div>
+          <div class="bg-red-500/10 border-x border-red-500/20 h-full"></div>
+          <div class="bg-red-500/10 border-x border-red-500/20 h-full"></div>
+          <div class="bg-red-500/10 border-x border-red-500/20 h-full"></div>
+          <div class="bg-red-500/10 border-x border-red-500/20 h-full"></div>
+          <div class="bg-red-500/10 border-x border-red-500/20 h-full"></div>
+          <div class="bg-red-500/10 border-x border-red-500/20 h-full"></div>
+          <div class="bg-red-500/10 border-x border-red-500/20 h-full"></div>
+        </div>
+
+        <!-- 8-Point Grid Overlay -->
+        <div id="overlay-8pt" class="absolute inset-0 z-30 pointer-events-none hidden grid-8pt-overlay"></div>
+
+        <!-- Alignment Vertical Guide Line (Red Laser) -->
+        <div id="overlay-laser" class="laser-guide left-8 hidden"></div>
+
+        <!-- THE LOGIN PAGE CARD (30% Secondary Container) -->
+        <div id="login-card" class="w-full max-w-[420px] bg-surface-850 border border-surface-800 rounded-[28px] p-8 shadow-card-elevated relative z-20 transition-all duration-300">
+          
+          <!-- Spacing badge: 32px padding -->
+          <div class="spacing-badge hidden absolute top-2 right-2 text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">
+            Padding: 32px
+          </div>
+
+          <!-- =============================================================== -->
+          <!-- 1. BRAND BLOCK -->
+          <!-- =============================================================== -->
+          <div id="target-brand" class="flex items-center gap-3 mb-6 transition-all">
+            <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-brand-600 to-sky-400 flex items-center justify-center text-white shadow-md">
+              <i data-lucide="hotel" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="font-extrabold text-lg text-white tracking-tight">StayEase</span>
+                <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-brand-500/20 text-brand-300 font-bold">ALMATY</span>
+              </div>
+              <span class="text-xs text-slate-400">Премиальный сервис бронирования</span>
+            </div>
+          </div>
+
+          <!-- =============================================================== -->
+          <!-- 2. HEADING COMPLEX -->
+          <!-- =============================================================== -->
+          <div id="target-heading" class="mb-6 relative transition-all">
+            <!-- Type Scale Badge -->
+            <span class="type-badge hidden absolute -top-4 left-0 text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/40">
+              H1 • 28px • Bold 700 • Line-height 36px
+            </span>
+            <h1 class="text-[26px] font-extrabold text-white tracking-tight leading-[1.25]">
+              Вход в личный кабинет
+            </h1>
+            <p class="text-xs text-slate-400 mt-1.5">
+              Бронируйте лучшие отели Алматы и курорта Шымбулак
+            </p>
+          </div>
+
+          <!-- Spacing badge: 24px gap -->
+          <div class="spacing-badge hidden my-2 text-center text-[9px] font-mono text-amber-400 bg-amber-500/10 py-0.5 rounded border border-amber-500/20">
+            ↕ 24px Spacing (Macro)
+          </div>
+
+          <!-- =============================================================== -->
+          <!-- 3. FORM INPUTS -->
+          <!-- =============================================================== -->
+          <form id="login-form" class="space-y-4" onsubmit="event.preventDefault(); triggerSubmit();">
+            
+            <!-- Email Input Field -->
+            <div id="target-email-field" class="space-y-1.5 relative transition-all">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-semibold text-slate-200">Электронная почта</label>
+                <span class="type-badge hidden text-[9px] font-mono text-sky-400">13px • Semibold 600</span>
+              </div>
+              
+              <div class="relative flex items-center">
+                <i data-lucide="mail" class="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none"></i>
+                <input 
+                  type="email" 
+                  id="input-email"
+                  value="elena.smirnova@metu.kz" 
+                  placeholder="name@example.com"
+                  class="w-full h-12 pl-10 pr-3.5 bg-surface-950 border border-surface-800 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all font-sans"
+                >
+              </div>
+
+              <!-- Spacing badge: 8px -->
+              <div class="spacing-badge hidden text-[9px] font-mono text-amber-400 text-right">
+                gap: 8px
+              </div>
+            </div>
+
+            <!-- Password Input Field -->
+            <div id="target-password-field" class="space-y-1.5 relative transition-all">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-semibold text-slate-200">Пароль</label>
+                <span class="type-badge hidden text-[9px] font-mono text-sky-400">13px • Semibold 600</span>
+              </div>
+
+              <div class="relative flex items-center">
+                <i data-lucide="lock" class="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none"></i>
+                <input 
+                  type="password" 
+                  id="input-password"
+                  value="••••••••••••" 
+                  placeholder="Введите пароль"
+                  class="w-full h-12 pl-10 pr-10 bg-surface-950 border border-surface-800 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all font-sans"
+                >
+                <!-- Show/Hide Password Eye Button -->
+                <button type="button" id="btn-toggle-password" class="absolute right-3 p-1 rounded-lg text-slate-400 hover:text-white transition-colors" title="Показать/скрыть пароль">
+                  <i data-lucide="eye" id="eye-icon" class="w-4 h-4"></i>
+                </button>
+              </div>
+
+              <!-- Validation Error Message Hint -->
+              <p id="error-hint" class="text-[11px] text-red-400 font-medium hidden flex items-center gap-1 mt-1">
+                <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i>
+                <span>Неверный пароль. Попробуйте еще раз.</span>
+              </p>
+            </div>
+
+            <!-- Aux: Remember Me + Forgot Password -->
+            <div id="target-aux" class="flex items-center justify-between pt-1 text-xs">
+              <label class="flex items-center gap-2 cursor-pointer select-none">
+                <input type="checkbox" checked class="w-4 h-4 rounded border-surface-700 bg-surface-950 text-brand-500 focus:ring-0 focus:ring-offset-0 cursor-pointer accent-brand-500">
+                <span class="text-slate-300 text-[11px]">Запомнить меня</span>
+              </label>
+              <a href="#" class="text-[11px] text-brand-400 hover:text-brand-300 font-medium transition-colors">Забыли пароль?</a>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- 4. PRIMARY CTA BUTTON (10% ACCENT) -->
+            <!-- ============================================================= -->
+            <div id="target-primary-cta" class="pt-2 relative transition-all">
+              
+              <!-- Touch Target Size Badge -->
+              <div class="spacing-badge hidden absolute -top-2 right-0 text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                Touch Target: 48px height
+              </div>
+
+              <button 
+                type="submit" 
+                id="btn-login-submit"
+                class="w-full h-12 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-glow-accent transition-all active:scale-[0.98]"
+              >
+                <span id="btn-text" class="flex items-center gap-2">
+                  <span>Войти в StayEase</span>
+                  <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </span>
+                <span id="btn-spinner" class="hidden flex items-center gap-2 font-medium">
+                  <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span>Проверка учетных данных...</span>
+                </span>
+              </button>
+            </div>
+
+          </form>
+
+          <!-- =============================================================== -->
+          <!-- 5. SOCIAL AUTH DIVIDER -->
+          <!-- =============================================================== -->
+          <div class="mt-6 pt-5 border-t border-surface-800 text-center relative">
+            <span class="absolute top-0 -translate-y-1/2 left-1/2 -translate-x-1/2 px-3 bg-surface-850 text-[10px] text-slate-400 uppercase tracking-wider font-semibold">
+              или через соцсети
+            </span>
+
+            <div class="grid grid-cols-3 gap-2 mt-2">
+              <button class="h-10 rounded-xl bg-surface-950 border border-surface-800 hover:border-surface-700 text-xs font-semibold text-slate-300 flex items-center justify-center gap-1.5 transition-colors">
+                <i data-lucide="globe" class="w-3.5 h-3.5 text-red-400"></i>
+                <span>Google</span>
+              </button>
+              <button class="h-10 rounded-xl bg-surface-950 border border-surface-800 hover:border-surface-700 text-xs font-semibold text-slate-300 flex items-center justify-center gap-1.5 transition-colors">
+                <i data-lucide="apple" class="w-3.5 h-3.5 text-white"></i>
+                <span>Apple</span>
+              </button>
+              <button class="h-10 rounded-xl bg-surface-950 border border-surface-800 hover:border-surface-700 text-xs font-semibold text-slate-300 flex items-center justify-center gap-1.5 transition-colors">
+                <i data-lucide="send" class="w-3.5 h-3.5 text-sky-400"></i>
+                <span>Telegram</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 6. Footer Registration Link -->
+          <div class="mt-6 text-center text-xs text-slate-400">
+            <span>Еще нет аккаунта в StayEase?</span>
+            <a href="#" class="text-brand-400 hover:text-brand-300 font-semibold ml-1">Зарегистрироваться</a>
+          </div>
+
+          <!-- Success Modal Overlay inside card -->
+          <div id="success-overlay" class="absolute inset-0 bg-surface-900/95 backdrop-blur-md rounded-[28px] p-6 flex flex-col items-center justify-center text-center hidden z-30 transition-all">
+            <div class="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center shadow-glow-success mb-3">
+              <i data-lucide="check" class="w-8 h-8 stroke-[3]"></i>
+            </div>
+            <h3 class="text-lg font-extrabold text-white">Успешная авторизация!</h3>
+            <p class="text-xs text-slate-300 mt-1 max-w-xs">
+              Добро пожаловать в личный кабинет StayEase (Алматы). Перенаправление...
+            </p>
+            <button onclick="setState('default')" class="mt-5 px-4 py-2 rounded-xl bg-surface-800 text-xs font-bold text-white hover:bg-surface-700 transition-colors">
+              Вернуться назад
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- COLUMN 3: PRACTICAL AUDIT (9 QUESTIONS - RIGHT - 4.5 COLS) -->
+      <!-- ===================================================================== -->
+      <aside class="lg:col-span-4 space-y-4">
+        
+        <div class="p-5 rounded-2xl bg-surface-900 border border-surface-800 shadow-xl space-y-3">
+          
+          <div class="flex items-center justify-between pb-2 border-b border-surface-800">
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400 block font-mono">Слайд №21 лекции</span>
+              <h3 class="text-sm font-bold text-white">Интерактивный аудит дизайна</h3>
+            </div>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-surface-800 text-slate-300 font-mono">9 вопросов</span>
+          </div>
+
+          <p class="text-[11px] text-slate-400">
+            Нажмите на любой вопрос, чтобы увидеть развернутый ответ и подсветить соответствующий блок на экране входа.
+          </p>
+
+          <!-- 9 Questions Accordion List -->
+          <div class="space-y-2 max-h-[640px] overflow-y-auto pr-1" id="audit-questions-container">
+            <!-- Injected by JS -->
+          </div>
+
+        </div>
+
+      </aside>
+
+    </div>
+
+  </main>
+
+
+  <!-- ========================================================================= -->
+  <!-- JAVASCRIPT APPLICATION CODE -->
+  <!-- ========================================================================= -->
+  <script>
+    // State storage
+    let currentState = 'default';
+    let is8ptGridOn = false;
+    let is12ColOn = false;
+    let isMobileColOn = false;
+    let isTypeScaleOn = false;
+    let isSpacingOn = false;
+    let isPasswordVisible = false;
+
+    // Elements
+    const loginCard = document.getElementById('login-card');
+    const inputPassword = document.getElementById('input-password');
+    const inputEmail = document.getElementById('input-email');
+    const btnTogglePassword = document.getElementById('btn-toggle-password');
+    const eyeIcon = document.getElementById('eye-icon');
+    const errorHint = document.getElementById('error-hint');
+    const btnText = document.getElementById('btn-text');
+    const btnSpinner = document.getElementById('btn-spinner');
+    const btnLoginSubmit = document.getElementById('btn-login-submit');
+    const successOverlay = document.getElementById('success-overlay');
+
+    // Overlays
+    const overlay8pt = document.getElementById('overlay-8pt');
+    const overlay12col = document.getElementById('overlay-12col');
+    const overlayLaser = document.getElementById('overlay-laser');
+    const toggle8ptBtn = document.getElementById('toggle-grid-8pt');
+    const toggle12colBtn = document.getElementById('toggle-grid-12col');
+    const toggleMobileBtn = document.getElementById('toggle-grid-mobile');
+    const toggleTypeScaleBtn = document.getElementById('toggle-type-scale');
+    const toggleSpacingBadgesBtn = document.getElementById('toggle-spacing-badges');
+
+    // 9 Audit Questions Data
+    const auditData = [
+      {
+        num: 1,
+        title: "Какие цвета использованы и какова их роль?",
+        targetId: "target-primary-cta",
+        answer: "Использовано правило 60–30–10: 60% — темный нейтральный фон Dark Slate Navy (#0A101D); 30% — карточка (#0F182C) и текст (#F1F5F9 / #94A3B8); 10% — акцентный Brand Blue (#0284C7 / #38BDF8) строго для кнопки CTA и фокусов полей."
+      },
+      {
+        num: 2,
+        title: "Какой элемент привлекает внимание первым?",
+        targetId: "target-heading",
+        answer: "Заголовок H1 (28px Bold) в паре с логотипом привлекает взгляд первым из-за наивысшего визуального веса, после чего взгляд падает на Primary кнопку 'Войти' благодаря цветовой изоляции (эффект фон Ресторфф)."
+      },
+      {
+        num: 3,
+        title: "Какая типографическая иерархия реализована?",
+        targetId: "target-heading",
+        answer: "Шкала шрифтов: H1 (28px / 700), кнопка действия (15px / 700), вводимый текст (15px / 400), подписи полей (13px / 600), вспомогательные ссылки (13px / 500) и микроошибки (12px / 500)."
+      },
+      {
+        num: 4,
+        title: "Как выполнено выравнивание (Alignment)?",
+        targetId: "target-email-field",
+        showLaser: true,
+        answer: "Строгое левостороннее выравнивание по единой вертикальной оси для всех подписей, иконок и полей ввода. Ссылка 'Забыли пароль' выровнена по правому краю поля пароля."
+      },
+      {
+        num: 5,
+        title: "В каких зонах использован White Space?",
+        targetId: "login-card",
+        answer: "Макро-отступ изолирует карточку по центру экрана; микро-отступы (8px между лейблом и полем, 20px между инпутами, 32px внутренний padding) группируют поля по закону близости."
+      },
+      {
+        num: 6,
+        title: "Какая сетка (Grid) и шкала применены?",
+        targetId: "target-primary-cta",
+        showSpacing: true,
+        answer: "Применена 8-Point Grid System с шагом 8px (8, 16, 24, 32, 48px). Высота кнопки и инпутов зафиксирована на 48px для полного соответствия требованиям тач-интерфейсов."
+      },
+      {
+        num: 7,
+        title: "Считывается ли главное действие (Primary Action)?",
+        targetId: "target-primary-cta",
+        answer: "Да, мгновенно. Кнопка 'Войти' — единственный крупный элемент с акцентной синей заливкой (#0284C7), 48px высоты и жирным начертанием, расположенный в конце сценария сканирования."
+      },
+      {
+        num: 8,
+        title: "Какие ошибки предотвращены в дизайне?",
+        targetId: "target-password-field",
+        answer: "Предотвращены: исчезающие плейсхолдеры (лейблы зафиксированы), мелкие кликабельные зоны (все кнопки 48px), невозможность проверить пароль (добавлен глазок) и цветовая пестрота."
+      },
+      {
+        num: 9,
+        title: "Рекомендации для дальнейшего улучшения?",
+        targetId: "target-brand",
+        answer: "Интеграция биометрии WebAuthn / Passkeys (Face ID в 1 клик), автоопределение телефонного кода Казахстана (+7) и динамическая валидация email по событию onBlur."
+      }
+    ];
+
+    // =========================================================================
+    // STATE SWITCHER LOGIC
+    // =========================================================================
+    function setState(state) {
+      currentState = state;
+
+      // Update state buttons styling
+      document.querySelectorAll('.state-btn').forEach(btn => {
+        if (btn.dataset.state === state) {
+          btn.className = 'state-btn active px-3 py-2 rounded-xl border border-brand-500 bg-brand-500/20 text-white text-xs font-bold transition-all';
+        } else {
+          btn.className = 'state-btn px-3 py-2 rounded-xl border border-surface-700 bg-surface-950 text-slate-300 hover:text-white text-xs font-medium transition-all';
+        }
+      });
+
+      // Reset card elements
+      loginCard.classList.remove('animate-shake');
+      inputPassword.classList.remove('border-red-500', 'focus:border-red-500', 'focus:ring-red-500/20');
+      errorHint.classList.add('hidden');
+      btnText.classList.remove('hidden');
+      btnSpinner.classList.add('hidden');
+      btnLoginSubmit.disabled = false;
+      successOverlay.classList.add('hidden');
+
+      if (state === 'loading') {
+        btnText.classList.add('hidden');
+        btnSpinner.classList.remove('hidden');
+        btnLoginSubmit.disabled = true;
+      } else if (state === 'error') {
+        loginCard.classList.add('animate-shake');
+        inputPassword.classList.add('border-red-500', 'focus:border-red-500', 'focus:ring-red-500/20');
+        errorHint.classList.remove('hidden');
+      } else if (state === 'success') {
+        successOverlay.classList.remove('hidden');
+      }
+      lucide.createIcons();
+    }
+
+    document.querySelectorAll('.state-btn').forEach(btn => {
+      btn.addEventListener('click', () => setState(btn.dataset.state));
+    });
+
+    function triggerSubmit() {
+      setState('loading');
+      setTimeout(() => {
+        setState('success');
+      }, 1500);
+    }
+
+    // Toggle password visibility
+    btnTogglePassword.addEventListener('click', () => {
+      isPasswordVisible = !isPasswordVisible;
+      inputPassword.type = isPasswordVisible ? 'text' : 'password';
+      eyeIcon.setAttribute('data-lucide', isPasswordVisible ? 'eye-off' : 'eye');
+      lucide.createIcons();
+    });
+
+    // =========================================================================
+    // OVERLAY TOGGLES
+    // =========================================================================
+    toggle8ptBtn.addEventListener('click', () => {
+      is8ptGridOn = !is8ptGridOn;
+      overlay8pt.classList.toggle('hidden', !is8ptGridOn);
+      toggle8ptBtn.classList.toggle('border-brand-500', is8ptGridOn);
+      toggle8ptBtn.classList.toggle('bg-brand-500/20', is8ptGridOn);
+      toggle8ptBtn.classList.toggle('text-white', is8ptGridOn);
+    });
+
+    toggle12colBtn.addEventListener('click', () => {
+      is12ColOn = !is12ColOn;
+      overlay12col.classList.toggle('hidden', !is12ColOn);
+      toggle12colBtn.classList.toggle('border-brand-500', is12ColOn);
+      toggle12colBtn.classList.toggle('bg-brand-500/20', is12ColOn);
+      toggle12colBtn.classList.toggle('text-white', is12ColOn);
+    });
+
+    toggleMobileBtn.addEventListener('click', () => {
+      isMobileColOn = !isMobileColOn;
+      if (isMobileColOn) {
+        loginCard.style.maxWidth = '340px';
+      } else {
+        loginCard.style.maxWidth = '420px';
+      }
+      toggleMobileBtn.classList.toggle('border-brand-500', isMobileColOn);
+      toggleMobileBtn.classList.toggle('bg-brand-500/20', isMobileColOn);
+      toggleMobileBtn.classList.toggle('text-white', isMobileColOn);
+    });
+
+    toggleTypeScaleBtn.addEventListener('click', () => {
+      isTypeScaleOn = !isTypeScaleOn;
+      document.querySelectorAll('.type-badge').forEach(b => b.classList.toggle('hidden', !isTypeScaleOn));
+      toggleTypeScaleBtn.classList.toggle('border-brand-500', isTypeScaleOn);
+      toggleTypeScaleBtn.classList.toggle('bg-brand-500/20', isTypeScaleOn);
+    });
+
+    toggleSpacingBadgesBtn.addEventListener('click', () => {
+      isSpacingOn = !isSpacingOn;
+      document.querySelectorAll('.spacing-badge').forEach(b => b.classList.toggle('hidden', !isSpacingOn));
+      toggleSpacingBadgesBtn.classList.toggle('border-amber-500', isSpacingOn);
+      toggleSpacingBadgesBtn.classList.toggle('bg-amber-500/20', isSpacingOn);
+    });
+
+    document.getElementById('btn-reset-lab').addEventListener('click', () => {
+      setState('default');
+      is8ptGridOn = false;
+      is12ColOn = false;
+      isMobileColOn = false;
+      isTypeScaleOn = false;
+      isSpacingOn = false;
+      overlay8pt.classList.add('hidden');
+      overlay12col.classList.add('hidden');
+      overlayLaser.classList.add('hidden');
+      document.querySelectorAll('.type-badge').forEach(b => b.classList.add('hidden'));
+      document.querySelectorAll('.spacing-badge').forEach(b => b.classList.add('hidden'));
+      document.querySelectorAll('.element-highlighted').forEach(el => el.classList.remove('element-highlighted'));
+      loginCard.style.maxWidth = '420px';
+      document.querySelectorAll('.tool-btn').forEach(btn => {
+        btn.classList.remove('border-brand-500', 'bg-brand-500/20', 'border-amber-500', 'bg-amber-500/20', 'text-white');
+      });
+    });
+
+    // =========================================================================
+    // 9 AUDIT QUESTIONS ACCORDION BUILDER
+    // =========================================================================
+    const auditContainer = document.getElementById('audit-questions-container');
+
+    function renderAuditQuestions() {
+      auditContainer.innerHTML = '';
+
+      auditData.forEach(q => {
+        const item = document.createElement('div');
+        item.className = 'rounded-xl border border-surface-800 bg-surface-950/70 p-3 transition-all cursor-pointer hover:border-brand-500/60 group';
+        
+        item.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-white group-hover:text-brand-300 transition-colors flex items-center gap-1.5">
+              <span class="w-5 h-5 rounded bg-surface-850 border border-surface-700 font-mono text-[10px] text-brand-400 flex items-center justify-center font-bold">
+                ${q.num}
+              </span>
+              <span>${q.title}</span>
+            </span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-hover:text-white transition-transform q-arrow"></i>
+          </div>
+          <div class="q-answer hidden mt-2.5 pt-2.5 border-t border-surface-800/80 text-[11px] text-slate-300 leading-relaxed">
+            <p>${q.answer}</p>
+            <div class="mt-2 text-[10px] font-mono text-brand-400 font-semibold flex items-center gap-1">
+              <i data-lucide="crosshair" class="w-3 h-3"></i>
+              <span>Подсвечен целевой элемент на форме</span>
+            </div>
+          </div>
+        `;
+
+        item.addEventListener('click', () => {
+          const answer = item.querySelector('.q-answer');
+          const arrow = item.querySelector('.q-arrow');
+          const isHidden = answer.classList.contains('hidden');
+
+          // Collapse all others
+          document.querySelectorAll('.q-answer').forEach(a => a.classList.add('hidden'));
+          document.querySelectorAll('.q-arrow').forEach(ar => ar.classList.remove('rotate-180'));
+          document.querySelectorAll('.element-highlighted').forEach(el => el.classList.remove('element-highlighted'));
+          overlayLaser.classList.add('hidden');
+
+          if (isHidden) {
+            answer.classList.remove('hidden');
+            arrow.classList.add('rotate-180');
+
+            // Highlight target element on the Login card
+            const targetEl = document.getElementById(q.targetId);
+            if (targetEl) {
+              targetEl.classList.add('element-highlighted');
+              targetEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            // Laser guide for alignment
+            if (q.showLaser) {
+              overlayLaser.classList.remove('hidden');
+            }
+
+            // Show spacing badges if requested by question
+            if (q.showSpacing) {
+              document.querySelectorAll('.spacing-badge').forEach(b => b.classList.remove('hidden'));
+            }
+          }
+          lucide.createIcons();
+        });
+
+        auditContainer.appendChild(item);
+      });
+
+      lucide.createIcons();
+    }
+
+    // Init
+    document.addEventListener('DOMContentLoaded', () => {
+      renderAuditQuestions();
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
